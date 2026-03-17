@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyección de Demanda - Gaseosas Lima</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A0E17;color:#F1F5F9;font-family:'DM Sans',sans-serif;padding:20px;min-height:100vh}
+.container{max-width:920px;margin:0 auto}
+.header{margin-bottom:24px}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#F59E0B,#FBBF24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline}
+.header p{color:#64748B;font-size:13px;margin-top:4px}
+.kpi-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.kpi{background:linear-gradient(135deg,#111827,#0A0E17);border:1px solid #1E293B;border-radius:12px;padding:16px 18px;flex:1 1 160px;min-width:150px}
+.kpi-label{color:#64748B;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.kpi-value{font-size:26px;font-weight:700;color:#F1F5F9}
+.kpi-value span{font-size:13px;color:#94A3B8;font-weight:400;margin-left:3px}
+.kpi-sub{font-size:11px;color:#64748B;margin-top:3px}
+.card{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:18px}
+.card h3{font-size:15px;font-weight:600;color:#F1F5F9;margin-bottom:2px}
+.card .sub{font-size:12px;color:#64748B;margin-bottom:14px}
+.chart-wrap{position:relative;width:100%;height:280px}
+.chart-wrap.sm{height:230px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.controls{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:22px}
+.controls h3{font-size:14px;font-weight:600;color:#F1F5F9;margin-bottom:14px}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 24px}
+.slider-group{margin-bottom:12px}
+.slider-header{display:flex;justify-content:space-between;margin-bottom:3px}
+.slider-header span{font-size:12px;color:#94A3B8}
+.slider-header strong{font-size:12px;color:#F59E0B;font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:4px;background:#1E293B;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#F59E0B;cursor:pointer;border:2px solid #0A0E17}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#F59E0B;cursor:pointer;border:2px solid #0A0E17}
+.method{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:18px}
+.method h3{font-size:14px;font-weight:600;color:#F59E0B;margin-bottom:10px}
+.method p{font-size:12px;color:#94A3B8;line-height:1.7;margin-bottom:6px}
+.method strong{color:#F1F5F9}
+.footer{text-align:center;padding:10px 0;color:#64748B;font-size:11px}
+.legend-row{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#94A3B8}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:28px">🥤</span>
+      <h1>Proyección de Demanda</h1>
+    </div>
+    <p>Gaseosas en Lima Metropolitana · 2024–2030</p>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Demanda 2030 <span>🎯</span></div><div class="kpi-value" id="kpi-dem">--<span>M litros</span></div><div class="kpi-sub">Escenario base</div></div>
+    <div class="kpi"><div class="kpi-label">CAGR <span>📈</span></div><div class="kpi-value" id="kpi-cagr">--<span>%</span></div><div class="kpi-sub">Tasa compuesta anual</div></div>
+    <div class="kpi"><div class="kpi-label">Consumo p/c 2030 <span>🧑</span></div><div class="kpi-value" id="kpi-cpc">--<span>L/año</span></div><div class="kpi-sub">Per cápita base</div></div>
+    <div class="kpi"><div class="kpi-label">Mercado 2030 <span>💰</span></div><div class="kpi-value" id="kpi-ing">--<span>MM S/</span></div><div class="kpi-sub">Miles de millones soles</div></div>
+  </div>
+
+  <div class="controls">
+    <h3>⚙️ Parámetros del Modelo</h3>
+    <div class="sliders">
+      <div class="slider-group"><div class="slider-header"><span>Crecimiento PIB</span><strong id="v-pib">2.8%</strong></div><input type="range" id="s-pib" min="0.5" max="6" step="0.1" value="2.8"></div>
+      <div class="slider-group"><div class="slider-header"><span>Elasticidad ingreso</span><strong id="v-elast">0.60</strong></div><input type="range" id="s-elast" min="0.1" max="1.5" step="0.05" value="0.6"></div>
+      <div class="slider-group"><div class="slider-header"><span>Efecto salud (anual)</span><strong id="v-salud">-0.5%</strong></div><input type="range" id="s-salud" min="-3" max="0" step="0.1" value="-0.5"></div>
+      <div class="slider-group"><div class="slider-header"><span>Precio prom. litro</span><strong id="v-precio">S/ 3.80</strong></div><input type="range" id="s-precio" min="2" max="7" step="0.1" value="3.8"></div>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Optimista</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>Base</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>Conservador</div>
+  </div>
+
+  <div class="card"><h3>Demanda Total Proyectada</h3><div class="sub">Millones de litros · Lima Metropolitana</div><div class="chart-wrap"><canvas id="chartDemanda"></canvas></div></div>
+
+  <div class="grid-2">
+    <div class="card"><h3>Consumo Per Cápita</h3><div class="sub">Litros por persona al año</div><div class="chart-wrap sm"><canvas id="chartCPC"></canvas></div></div>
+    <div class="card"><h3>Comparación por Hitos</h3><div class="sub">Demanda en millones de litros</div><div class="chart-wrap sm"><canvas id="chartBar"></canvas></div></div>
+  </div>
+
+  <div class="card"><h3>Valor de Mercado Proyectado</h3><div class="sub">Miles de millones de soles · Lima</div><div class="chart-wrap"><canvas id="chartIngresos"></canvas></div></div>
+
+  <div class="method">
+    <h3>📋 Metodología y Supuestos</h3>
+    <p><strong>Modelo:</strong> Proyección basada en crecimiento poblacional (INEI), elasticidad ingreso-demanda, tendencia de consumo saludable y ajuste inflacionario.</p>
+    <p><strong>Datos base (2024):</strong> Población Lima ~11.3M hab · Consumo per cápita ~62 L/año · Lima representa ~35% del consumo nacional · Precio promedio ~S/3.80/litro.</p>
+    <p><strong>Escenarios:</strong> Optimista (PIB alto, baja tendencia salud) · Base (parámetros centrales) · Conservador (PIB bajo, fuerte efecto salud + impuesto a bebidas azucaradas).</p>
+    <p><strong>Fuentes referenciales:</strong> INEI, PRODUCE, Euromonitor, BCRP. Los valores son estimaciones para fines de planificación y deben validarse con datos primarios del mercado.</p>
+  </div>
+
+  <div class="footer">Proyección estimativa · Ajusta los parámetros para explorar escenarios · Lima Metropolitana 2024–2030</div>
+</div>
+
+<script>
+var YEARS = [2024,2025,2026,2027,2028,2030];
+var HITO_YEARS = [2024,2026,2028,2030];
+var YEARS_FULL = [2024,2025,2026,2027,2028,2029,2030];
+
+var sc = {
+  optimista:   {gMod:1.4, sMod:0.3, iMod:0.8, color:'#10B981'},
+  base:        {gMod:1.0, sMod:1.0, iMod:1.0, color:'#F59E0B'},
+  conservador: {gMod:0.6, sMod:2.0, iMod:1.3, color:'#EF4444'}
+};
+
+function compute(pib, elast, salud, precio) {
+  var popBase=11.3, consBase=62, tasaPob=0.011, inflacion=0.035;
+  var r = {};
+  var keys = ['optimista','base','conservador'];
+  for (var ki=0; ki<keys.length; ki++) {
+    var k = keys[ki];
+    var s = sc[k];
+    r[k] = {dem:[], cpc:[], ing:[]};
+    for (var yi=0; yi<YEARS_FULL.length; yi++) {
+      var t = yi;
+      var pop = popBase * Math.pow(1+tasaPob, t);
+      var fIng = Math.pow(1 + (pib/100)*s.gMod*elast, t);
+      var fSal = Math.pow(1 + (salud/100)*s.sMod, t);
+      var cpc = consBase * fIng * fSal;
+      var dem = (pop * cpc) / 1000;
+      var pAdj = precio * Math.pow(1 + inflacion*s.iMod, t);
+      var ing = (dem * pAdj * 1e6) / 1e9;
+      r[k].dem.push(+dem.toFixed(1));
+      r[k].cpc.push(+cpc.toFixed(1));
+      r[k].ing.push(+ing.toFixed(2));
+    }
+  }
+  return r;
+}
+
+Chart.defaults.color = '#94A3B8';
+Chart.defaults.borderColor = '#1E293B';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 11;
+
+var tooltipStyle = {
+  backgroundColor:'rgba(17,24,39,0.95)',
+  borderColor:'#1E293B',
+  borderWidth:1,
+  titleColor:'#F1F5F9',
+  bodyColor:'#94A3B8',
+  padding:12,
+  cornerRadius:8
+};
+
+function lineDS(data, field, fillBase) {
+  var keys = ['optimista','base','conservador'];
+  var labels = ['Optimista','Base','Conservador'];
+  var ds = [];
+  for (var i=0; i<keys.length; i++) {
+    ds.push({
+      label: labels[i],
+      data: data[keys[i]][field],
+      borderColor: sc[keys[i]].color,
+      backgroundColor: sc[keys[i]].color+'33',
+      borderWidth: keys[i]==='base'?3:2,
+      pointRadius: 3,
+      pointBackgroundColor: sc[keys[i]].color,
+      tension: 0.35,
+      fill: fillBase && keys[i]==='base'
+    });
+  }
+  return ds;
+}
+
+function barDS(data) {
+  var indices = [];
+  for (var i=0; i<YEARS_FULL.length; i++) {
+    if (HITO_YEARS.indexOf(YEARS_FULL[i]) >= 0) indices.push(i);
+  }
+  var keys = ['optimista','base','conservador'];
+  var labels = ['Optimista','Base','Conservador'];
+  var ds = [];
+  for (var ki=0; ki<keys.length; ki++) {
+    var vals = [];
+    for (var j=0; j<indices.length; j++) vals.push(data[keys[ki]].dem[indices[j]]);
+    ds.push({
+      label: labels[ki],
+      data: vals,
+      backgroundColor: sc[keys[ki]].color+'CC',
+      borderColor: sc[keys[ki]].color,
+      borderWidth: 1,
+      borderRadius: 4
+    });
+  }
+  return ds;
+}
+
+var chartOpts = function(){ return {
+  responsive:true, maintainAspectRatio:false,
+  scales:{ y:{beginAtZero:false, grid:{color:'#1E293B'}}, x:{grid:{color:'#1E293B'}} },
+  plugins:{ legend:{display:false}, tooltip: tooltipStyle }
+};};
+
+var c1 = new Chart(document.getElementById('chartDemanda'), {type:'line', data:{labels:YEARS_FULL, datasets:[]}, options:chartOpts()});
+var c2 = new Chart(document.getElementById('chartCPC'), {type:'line', data:{labels:YEARS_FULL, datasets:[]}, options:chartOpts()});
+var c3 = new Chart(document.getElementById('chartBar'), {type:'bar', data:{labels:HITO_YEARS, datasets:[]}, options:chartOpts()});
+var c4 = new Chart(document.getElementById('chartIngresos'), {type:'line', data:{labels:YEARS_FULL, datasets:[]}, options:chartOpts()});
+
+function updateAll() {
+  var pib = parseFloat(document.getElementById('s-pib').value);
+  var elast = parseFloat(document.getElementById('s-elast').value);
+  var salud = parseFloat(document.getElementById('s-salud').value);
+  var precio = parseFloat(document.getElementById('s-precio').value);
+
+  document.getElementById('v-pib').textContent = pib.toFixed(1)+'%';
+  document.getElementById('v-elast').textContent = elast.toFixed(2);
+  document.getElementById('v-salud').textContent = salud.toFixed(1)+'%';
+  document.getElementById('v-precio').textContent = 'S/ '+precio.toFixed(2);
+
+  var data = compute(pib, elast, salud, precio);
+  var last = YEARS_FULL.length - 1;
+  var demEnd = data.base.dem[last];
+  var demStart = data.base.dem[0];
+  var cagr = ((Math.pow(demEnd/demStart, 1/6)-1)*100).toFixed(1);
+
+  document.getElementById('kpi-dem').innerHTML = demEnd+'<span> M litros</span>';
+  document.getElementById('kpi-cagr').innerHTML = cagr+'<span> %</span>';
+  document.getElementById('kpi-cpc').innerHTML = data.base.cpc[last]+'<span> L/año</span>';
+  document.getElementById('kpi-ing').innerHTML = data.base.ing[last]+'<span> MM S/</span>';
+
+  c1.data.datasets = lineDS(data, 'dem', true);
+  c1.update('none');
+
+  c2.data.datasets = lineDS(data, 'cpc', false);
+  c2.update('none');
+
+  c3.data.datasets = barDS(data);
+  c3.update('none');
+
+  var ingDS = lineDS(data, 'ing', true);
+  ingDS[0].borderDash = [5,5];
+  ingDS[0].fill = false;
+  ingDS[2].borderDash = [5,5];
+  ingDS[2].fill = false;
+  c4.data.datasets = ingDS;
+  c4.update('none');
+}
+
+document.getElementById('s-pib').addEventListener('input', updateAll);
+document.getElementById('s-elast').addEventListener('input', updateAll);
+document.getElementById('s-salud').addEventListener('input', updateAll);
+document.getElementById('s-precio').addEventListener('input', updateAll);
+
+updateAll();
+</script>
+</body>
+</html>
