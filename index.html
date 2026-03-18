@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyección de Demanda - Nueva Marca Gaseosa Lata 355ml</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A0E17;color:#F1F5F9;font-family:'DM Sans',sans-serif;padding:20px;min-height:100vh}
+.ct{max-width:960px;margin:0 auto}
+h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#F59E0B,#FBBF24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline}
+.sub-h{color:#64748B;font-size:13px;margin-top:4px}
+.badge{display:inline-block;font-size:10px;padding:3px 8px;border-radius:6px;font-weight:600;margin-top:6px}
+.badge-g{background:#10B98122;color:#10B981}
+.badge-b{background:#3B82F622;color:#3B82F6;margin-left:6px}
+.kr{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.kp{background:linear-gradient(135deg,#111827,#0A0E17);border:1px solid #1E293B;border-radius:12px;padding:14px 16px;flex:1 1 140px;min-width:140px}
+.kp-l{color:#64748B;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.kp-v{font-size:22px;font-weight:700;color:#F1F5F9}
+.kp-v span{font-size:11px;color:#94A3B8;font-weight:400;margin-left:3px}
+.kp-s{font-size:10px;color:#64748B;margin-top:2px}
+.cd{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:18px}
+.cd h3{font-size:15px;font-weight:600;color:#F1F5F9;margin-bottom:2px}
+.cd .sb{font-size:12px;color:#64748B;margin-bottom:14px}
+.cw{position:relative;width:100%;height:300px}
+.cw.sm{height:240px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.ctrl{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:20px}
+.ctrl h3{font-size:14px;font-weight:600;color:#F1F5F9;margin-bottom:14px}
+.sl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 24px}
+.sg{margin-bottom:12px}
+.sh{display:flex;justify-content:space-between;margin-bottom:3px}
+.sh span{font-size:12px;color:#94A3B8}
+.sh strong{font-size:12px;color:#F59E0B;font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:4px;background:#1E293B;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#F59E0B;cursor:pointer;border:2px solid #0A0E17}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#F59E0B;cursor:pointer;border:2px solid #0A0E17}
+.mt{background:#111827;border:1px solid #1E293B;border-radius:14px;padding:20px;margin-bottom:18px}
+.mt h3{font-size:14px;font-weight:600;color:#F59E0B;margin-bottom:10px}
+.mt p{font-size:12px;color:#94A3B8;line-height:1.7;margin-bottom:6px}
+.mt strong{color:#F1F5F9}
+.ft{text-align:center;padding:10px 0;color:#64748B;font-size:11px}
+.lr{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:6px;font-size:12px;color:#94A3B8}
+.ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dt{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}
+.dt th{color:#64748B;font-weight:500;text-align:right;padding:6px 8px;border-bottom:1px solid #1E293B}
+.dt th:first-child{text-align:left}
+.dt td{color:#94A3B8;text-align:right;padding:6px 8px;border-bottom:1px solid #1E293B11}
+.dt td:first-child{color:#F1F5F9;text-align:left;font-weight:600}
+.dt tr.pj td{color:#F59E0B;font-style:italic}
+.prod-box{background:linear-gradient(135deg,#111827,#0A0E17);border:1px solid #F59E0B44;border-radius:14px;padding:20px;margin-bottom:22px;text-align:center}
+.prod-box .icon{font-size:48px;margin-bottom:8px}
+.prod-box .name{font-size:18px;font-weight:700;color:#F59E0B;margin-bottom:4px}
+.prod-box .desc{font-size:12px;color:#94A3B8}
+.prod-stats{display:flex;justify-content:center;gap:30px;margin-top:14px;flex-wrap:wrap}
+.prod-stat{text-align:center}
+.prod-stat .v{font-size:22px;font-weight:700;color:#F1F5F9}
+.prod-stat .l{font-size:10px;color:#64748B;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="ct">
+  <div style="margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:28px">🥫</span><h1>Proyección de Demanda</h1>
+    </div>
+    <p class="sub-h">Nueva marca de gaseosa · Lata 355ml · Lima Metropolitana · 2026–2030</p>
+    <div class="badge badge-g">✓ Datos reales BCRP + INEI</div>
+    <div class="badge badge-b">Marca nueva · Segmento medio</div>
+  </div>
+
+  <!-- Product card -->
+  <div class="prod-box">
+    <div class="icon">🥫</div>
+    <div class="name">Tu Marca — Lata 355ml</div>
+    <div class="desc">Gaseosa en lata · Segmento precio medio · Canal bodega + moderno</div>
+    <div class="prod-stats">
+      <div class="prod-stat"><div class="v">S/1.75</div><div class="l">Precio unitario</div></div>
+      <div class="prod-stat"><div class="v">S/4.93</div><div class="l">Precio por litro</div></div>
+      <div class="prod-stat"><div class="v">355ml</div><div class="l">Contenido</div></div>
+      <div class="prod-stat"><div class="v">Lata</div><div class="l">Envase aluminio</div></div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kr">
+    <div class="kp"><div class="kp-l">Latas/mes Año 1</div><div class="kp-v" id="k1">--<span>uds</span></div><div class="kp-s">Escenario base</div></div>
+    <div class="kp"><div class="kp-l">Latas/mes Año 5</div><div class="kp-v" id="k2">--<span>uds</span></div><div class="kp-s">Escenario base</div></div>
+    <div class="kp"><div class="kp-l">Ingreso Año 1</div><div class="kp-v" id="k3">--<span>S/</span></div><div class="kp-s">Anual base</div></div>
+    <div class="kp"><div class="kp-l">Ingreso Año 5</div><div class="kp-v" id="k4">--<span>S/</span></div><div class="kp-s">Anual base</div></div>
+    <div class="kp"><div class="kp-l">Penetración Año 5</div><div class="kp-v" id="k5">--<span>%</span></div><div class="kp-s">Del mercado Lima</div></div>
+    <div class="kp"><div class="kp-l">Mercado total Lima</div><div class="kp-v">620<span>M Lt</span></div><div class="kp-s">Gaseosas 2025 (BCRP)</div></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="ctrl">
+    <h3>⚙️ Parámetros de tu Marca</h3>
+    <div class="sl">
+      <div class="sg"><div class="sh"><span>Precio por lata</span><strong id="vpr">S/1.75</strong></div><input type="range" id="spr" min="1.00" max="3.00" step="0.05" value="1.75"></div>
+      <div class="sg"><div class="sh"><span>Penetración meta Año 5 (%)</span><strong id="vpe">0.50%</strong></div><input type="range" id="spe" min="0.05" max="3" step="0.05" value="0.50"></div>
+      <div class="sg"><div class="sh"><span>Crecimiento mercado total</span><strong id="vcm">2.0%</strong></div><input type="range" id="scm" min="-2" max="5" step="0.1" value="2.0"></div>
+      <div class="sg"><div class="sh"><span>Puntos de venta Año 1</span><strong id="vpv">200</strong></div><input type="range" id="spv" min="50" max="2000" step="50" value="200"></div>
+      <div class="sg"><div class="sh"><span>Latas/punto de venta/día</span><strong id="vld">5</strong></div><input type="range" id="sld" min="1" max="30" step="1" value="5"></div>
+      <div class="sg"><div class="sh"><span>Crec. puntos de venta/año</span><strong id="vcpv">40%</strong></div><input type="range" id="scpv" min="10" max="100" step="5" value="40"></div>
+    </div>
+  </div>
+
+  <div class="lr">
+    <div class="li"><div class="ld" style="background:#10B981"></div>Optimista (+30%)</div>
+    <div class="li"><div class="ld" style="background:#F59E0B"></div>Base</div>
+    <div class="li"><div class="ld" style="background:#EF4444"></div>Conservador (-30%)</div>
+  </div>
+
+  <!-- Chart 1: Monthly units -->
+  <div class="cd">
+    <h3>Latas Vendidas por Mes</h3>
+    <div class="sb">Unidades mensuales · 3 escenarios · Año 1 a 5</div>
+    <div class="cw"><canvas id="c1"></canvas></div>
+  </div>
+
+  <!-- Chart 2 & 3 -->
+  <div class="g2">
+    <div class="cd">
+      <h3>Ingresos Anuales</h3>
+      <div class="sb">Miles de soles (S/)</div>
+      <div class="cw sm"><canvas id="c2"></canvas></div>
+    </div>
+    <div class="cd">
+      <h3>Puntos de Venta</h3>
+      <div class="sb">Bodegas y tiendas activas</div>
+      <div class="cw sm"><canvas id="c3"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Chart 4: Market share -->
+  <div class="cd">
+    <h3>Penetración del Mercado de Lima</h3>
+    <div class="sb">% del volumen total de gaseosas en Lima</div>
+    <div class="cw sm"><canvas id="c4"></canvas></div>
+  </div>
+
+  <!-- Chart 5: Unit economics -->
+  <div class="cd">
+    <h3>Ingreso por Punto de Venta</h3>
+    <div class="sb">Soles por punto de venta al mes</div>
+    <div class="cw sm"><canvas id="c5"></canvas></div>
+  </div>
+
+  <!-- Table -->
+  <div class="cd">
+    <h3>Tabla de Proyección Anual</h3>
+    <div style="overflow-x:auto">
+      <table class="dt"><thead><tr>
+        <th style="text-align:left">Año</th><th>Puntos venta</th><th>Latas/mes</th><th>Latas/año</th>
+        <th>Litros/año</th><th>Ingreso anual (S/)</th><th>Penetración</th>
+      </tr></thead><tbody id="tb"></tbody></table>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <div class="cd">
+    <h3>Competencia en lata 355ml — Lima</h3>
+    <div class="sb">Precios de referencia en bodega/supermercado</div>
+    <div style="overflow-x:auto">
+      <table class="dt">
+        <thead><tr><th style="text-align:left">Marca</th><th>Precio lata</th><th>S/ por litro</th><th>Segmento</th></tr></thead>
+        <tbody>
+          <tr><td>Coca-Cola</td><td>S/2.50</td><td>S/7.04</td><td>Premium</td></tr>
+          <tr><td>Inca Kola</td><td>S/2.50</td><td>S/7.04</td><td>Premium</td></tr>
+          <tr><td>Pepsi</td><td>S/2.00</td><td>S/5.63</td><td>Medio-alto</td></tr>
+          <tr><td style="color:#F59E0B;font-weight:700">→ Tu marca</td><td style="color:#F59E0B">S/1.75</td><td style="color:#F59E0B">S/4.93</td><td style="color:#F59E0B">Medio</td></tr>
+          <tr><td>Guaraná</td><td>S/1.50</td><td>S/4.23</td><td>Medio-bajo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Methodology -->
+  <div class="mt">
+    <h3>📋 Metodología y Supuestos</h3>
+    <p><strong>Mercado total:</strong> Lima consume ~620M litros/año de gaseosas (estimado BCRP 2025). Las latas representan ~3-5% del volumen total del mercado (la mayoría es botella PET).</p>
+    <p><strong>Modelo de demanda:</strong> Se proyecta desde los puntos de venta × rotación diaria, no desde participación de mercado. Esto es más realista para una marca nueva que crece con distribución.</p>
+    <p><strong>Crecimiento:</strong> Se asume expansión de puntos de venta por año (ajustable), con latas/punto de venta/día estable. El escenario optimista agrega +30% y el conservador resta -30%.</p>
+    <p><strong>Penetración:</strong> Se calcula como el volumen de tu marca ÷ mercado total de Lima. Para referencia, una marca pequeña nueva puede aspirar a 0.1-0.5% en sus primeros años. Kola Real tiene ~15% nacional.</p>
+    <p><strong>Precio:</strong> S/1.75 por lata posiciona entre Pepsi (S/2.00) y Guaraná (S/1.50), un punto competitivo para el canal bodega.</p>
+    <p><strong>Fuentes:</strong> BCRP (producción), INEI (población Lima 10.43M), precios de PlazaVea/Metro/bodegas Lima 2025.</p>
+  </div>
+
+  <div class="ft">Proyección para nueva marca · Lata 355ml · Lima Metropolitana 2026–2030</div>
+</div>
+
+<script>
+Chart.defaults.color='#94A3B8';
+Chart.defaults.borderColor='#1E293B';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.font.size=11;
+var tt={backgroundColor:'rgba(17,24,39,0.95)',borderColor:'#1E293B',borderWidth:1,titleColor:'#F1F5F9',bodyColor:'#94A3B8',padding:12,cornerRadius:8};
+var gc='#1E293B';
+
+var MARKET_LIMA_LITROS = 620; // M litros/año 2025
+var LITROS_PER_LATA = 0.355;
+var YEARS = ['Año 1','Año 2','Año 3','Año 4','Año 5'];
+var MONTHS_LABELS = [];
+for(var y=1;y<=5;y++) for(var m=1;m<=12;m++) MONTHS_LABELS.push('A'+y+'M'+m);
+
+function opts(){return{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:gc}},x:{grid:{color:gc}}},plugins:{legend:{display:false},tooltip:tt}};}
+
+var ch1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:MONTHS_LABELS,datasets:[]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:gc}},x:{grid:{color:gc},ticks:{maxTicksLimit:12,maxRotation:45}}},plugins:{legend:{display:false},tooltip:tt}}});
+var ch2=new Chart(document.getElementById('c2'),{type:'bar',data:{labels:YEARS,datasets:[]},options:opts()});
+var ch3=new Chart(document.getElementById('c3'),{type:'line',data:{labels:YEARS,datasets:[]},options:opts()});
+var ch4=new Chart(document.getElementById('c4'),{type:'line',data:{labels:YEARS,datasets:[]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:gc},ticks:{callback:function(v){return v.toFixed(2)+'%'}}},x:{grid:{color:gc}}},plugins:{legend:{display:false},tooltip:tt}}});
+var ch5=new Chart(document.getElementById('c5'),{type:'bar',data:{labels:YEARS,datasets:[]},options:opts()});
+
+function fmt(n){
+  if(n>=1000000) return (n/1000000).toFixed(2)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return n.toFixed(0);
+}
+
+function calc(precio, penMeta, crecMercado, pdv0, latasPdvDia, crecPdv){
+  var result = {monthly:{opt:[],base:[],cons:[]}, annual:[], pdvs:[], penetration:[], ingPerPdv:[]};
+  
+  for(var yr=0; yr<5; yr++){
+    // Points of sale grow each year
+    var pdv = pdv0 * Math.pow(1 + crecPdv/100, yr);
+    result.pdvs.push(Math.round(pdv));
+    
+    // Monthly latas (base scenario)
+    var latasMesBase = Math.round(pdv * latasPdvDia * 30);
+    
+    // Seasonality factor (Lima: summer Dec-Mar is peak)
+    var seasonFactors = [1.15,1.10,1.12,0.95,0.85,0.78,0.80,0.85,0.90,0.95,1.00,1.15];
+    
+    for(var m=0; m<12; m++){
+      var sf = seasonFactors[m];
+      // Gradual ramp-up in year 1
+      var ramp = (yr === 0) ? Math.min(1, (m+1)/6) : 1;
+      var base = Math.round(latasMesBase * sf * ramp);
+      result.monthly.opt.push(Math.round(base * 1.3));
+      result.monthly.base.push(base);
+      result.monthly.cons.push(Math.round(base * 0.7));
+    }
+    
+    // Annual totals
+    var startIdx = yr * 12;
+    var annualBase = 0;
+    for(var m=0; m<12; m++) annualBase += result.monthly.base[startIdx + m];
+    
+    var litrosAnual = annualBase * LITROS_PER_LATA;
+    var mercadoTotal = MARKET_LIMA_LITROS * Math.pow(1 + crecMercado/100, yr+1);
+    var penet = (litrosAnual / (mercadoTotal * 1000000)) * 100; // mercado en M litros, litros en unidades
+    
+    var ingresoAnual = annualBase * precio;
+    var ingPorPdv = ingresoAnual / Math.round(pdv) / 12;
+    
+    result.annual.push({
+      latasMes: Math.round(annualBase/12),
+      latasAnual: annualBase,
+      litrosAnual: litrosAnual,
+      ingreso: ingresoAnual,
+      penetracion: penet,
+      pdv: Math.round(pdv)
+    });
+    result.penetration.push(+penet.toFixed(4));
+    result.ingPerPdv.push(+ingPorPdv.toFixed(0));
+  }
+  return result;
+}
+
+function upd(){
+  var precio = parseFloat(document.getElementById('spr').value);
+  var penMeta = parseFloat(document.getElementById('spe').value);
+  var crecMerc = parseFloat(document.getElementById('scm').value);
+  var pdv0 = parseFloat(document.getElementById('spv').value);
+  var latasDia = parseFloat(document.getElementById('sld').value);
+  var crecPdv = parseFloat(document.getElementById('scpv').value);
+
+  document.getElementById('vpr').textContent = 'S/'+precio.toFixed(2);
+  document.getElementById('vpe').textContent = penMeta.toFixed(2)+'%';
+  document.getElementById('vcm').textContent = crecMerc.toFixed(1)+'%';
+  document.getElementById('vpv').textContent = pdv0;
+  document.getElementById('vld').textContent = latasDia;
+  document.getElementById('vcpv').textContent = crecPdv+'%';
+
+  var d = calc(precio, penMeta, crecMerc, pdv0, latasDia, crecPdv);
+
+  // KPIs
+  document.getElementById('k1').innerHTML = fmt(d.annual[0].latasMes)+'<span> uds</span>';
+  document.getElementById('k2').innerHTML = fmt(d.annual[4].latasMes)+'<span> uds</span>';
+  document.getElementById('k3').innerHTML = fmt(d.annual[0].ingreso)+'<span> S/</span>';
+  document.getElementById('k4').innerHTML = fmt(d.annual[4].ingreso)+'<span> S/</span>';
+  document.getElementById('k5').innerHTML = d.penetration[4].toFixed(4)+'<span> %</span>';
+
+  // C1: Monthly units
+  ch1.data.datasets = [
+    {label:'Optimista',data:d.monthly.opt,borderColor:'#10B981',borderWidth:1.5,pointRadius:0,tension:0.3},
+    {label:'Base',data:d.monthly.base,borderColor:'#F59E0B',backgroundColor:'#F59E0B22',borderWidth:2,pointRadius:0,tension:0.3,fill:true},
+    {label:'Conservador',data:d.monthly.cons,borderColor:'#EF4444',borderWidth:1.5,pointRadius:0,tension:0.3}
+  ];
+  ch1.update('none');
+
+  // C2: Annual revenue
+  var ingOpt=[], ingBase=[], ingCons=[];
+  d.annual.forEach(function(a){
+    ingBase.push(+(a.ingreso/1000).toFixed(1));
+    ingOpt.push(+((a.ingreso*1.3)/1000).toFixed(1));
+    ingCons.push(+((a.ingreso*0.7)/1000).toFixed(1));
+  });
+  ch2.data.datasets = [
+    {label:'Optimista',data:ingOpt,backgroundColor:'#10B981AA',borderRadius:4},
+    {label:'Base',data:ingBase,backgroundColor:'#F59E0BAA',borderRadius:4},
+    {label:'Conservador',data:ingCons,backgroundColor:'#EF4444AA',borderRadius:4}
+  ];
+  ch2.update('none');
+
+  // C3: Points of sale
+  ch3.data.datasets = [{
+    label:'Puntos de venta',
+    data:d.pdvs,
+    borderColor:'#3B82F6',
+    backgroundColor:'#3B82F633',
+    borderWidth:2.5,
+    pointRadius:5,
+    pointBackgroundColor:'#3B82F6',
+    tension:0.3,
+    fill:true
+  }];
+  ch3.update('none');
+
+  // C4: Penetration
+  ch4.data.datasets = [{
+    label:'Penetración',
+    data:d.penetration,
+    borderColor:'#A855F7',
+    backgroundColor:'#A855F733',
+    borderWidth:2.5,
+    pointRadius:5,
+    pointBackgroundColor:'#A855F7',
+    tension:0.3,
+    fill:true
+  }];
+  ch4.update('none');
+
+  // C5: Revenue per PDV
+  ch5.data.datasets = [{
+    label:'S/ por PDV/mes',
+    data:d.ingPerPdv,
+    backgroundColor:'#F59E0BAA',
+    borderRadius:4
+  }];
+  ch5.update('none');
+
+  // Table
+  var tb = document.getElementById('tb');
+  tb.innerHTML = '';
+  d.annual.forEach(function(a, i){
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>Año '+(i+1)+'</td><td>'+fmt(a.pdv)+'</td><td>'+fmt(a.latasMes)+'</td><td>'+fmt(a.latasAnual)+'</td><td>'+fmt(a.litrosAnual)+'</td><td>S/ '+fmt(a.ingreso)+'</td><td>'+a.penetracion.toFixed(4)+'%</td>';
+    tb.appendChild(tr);
+  });
+}
+
+['spr','spe','scm','spv','sld','scpv'].forEach(function(id){
+  document.getElementById(id).addEventListener('input',upd);
+});
+upd();
+</script>
+</body>
+</html>
